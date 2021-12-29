@@ -6,11 +6,13 @@ on:
   pull_request:
     branches: [ master ]
 
+defaults:
+  run:
+    working-directory: ./backend/MoneyManagerBackend
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    working-directory: ./backend/MoneyManagerBackend
 
     steps:
     - uses: actions/checkout@v2
