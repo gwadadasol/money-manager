@@ -19,6 +19,7 @@ jobs:
         dotnet-version: 6.0.x
     - run: ls -lisa
     - run: cd backend/MoneyManagerBackend
+    - run: ls -lisa
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
