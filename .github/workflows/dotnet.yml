@@ -10,6 +10,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    working-directory: ./backend/MoneyManagerBackend
 
     steps:
     - uses: actions/checkout@v2
@@ -19,7 +20,6 @@ jobs:
         dotnet-version: 6.0.x
     - run: pwd
     - name: Restore dependencies and build
-      working-directory: ./backend/MoneyManagerBackend
-      run: dotnet restore
-      run: dotnet build --no-restore
-      run: dotnet test --no-build --verbosity normal
+    - run: dotnet restore
+    - run: dotnet build --no-restore
+    - run: dotnet test --no-build --verbosity normal
