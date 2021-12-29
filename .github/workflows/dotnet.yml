@@ -18,14 +18,9 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - run: pwd
-    - run: ls -lisa
-    - run: cd backend
-    - run: ls -lisa
-    - run: cd MoneyManagerBackend
-    - run: ls -lisa
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Restore dependencies and build
+      working-directory: ./backend/MoneyManagerBackend
+      run: 
+        dotnet restore
+        dotnet build --no-restore
+        dotnet test --no-build --verbosity normal
