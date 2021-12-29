@@ -20,7 +20,6 @@ jobs:
     - run: pwd
     - name: Restore dependencies and build
       working-directory: ./backend/MoneyManagerBackend
-      run: 
-        dotnet restore
-        dotnet build --no-restore
-        dotnet test --no-build --verbosity normal
+      run: dotnet restore
+      run: dotnet build --no-restore
+      run: dotnet test --no-build --verbosity normal
