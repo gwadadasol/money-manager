@@ -266,18 +266,5 @@ namespace CategoryService
                 endpoints.MapControllers();
             });
         }
-
-        private async Task<string> GetAccessTokenAsync(string authority, string resource, string scope)
-        {
-            string ApplicationId = "d61b6013-0d9b-498b-b668-2b2d76cfdea0";
-            string ApplicationSecret = "3e633b07-fa51-46ea-a208-907ff214e7ea";
-
-            var appCredentials = new ClientCredential(ApplicationId, ApplicationSecret);
-            var context = new AuthenticationContext(authority, TokenCache.DefaultShared);
-
-            var result = await context.AcquireTokenAsync(resource, appCredentials);
-
-            return result.AccessToken;
-        }
     }
 }
