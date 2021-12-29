@@ -19,7 +19,9 @@ jobs:
         dotnet-version: 6.0.x
     - run: pwd
     - run: ls -lisa
-    - run: cd backend/MoneyManagerBackend
+    - run: cd backend
+    - run: ls -lisa
+    - run: cd MoneyManagerBackend
     - run: ls -lisa
     - name: Restore dependencies
       run: dotnet restore
