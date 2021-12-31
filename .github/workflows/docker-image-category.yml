@@ -1,6 +1,4 @@
 
-env:
-  tagId: $(date +%s)
 
 
 name: Docker Image CI
@@ -20,7 +18,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      tagId: $(date +%s)
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
