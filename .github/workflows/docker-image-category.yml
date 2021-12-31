@@ -1,5 +1,8 @@
 name: Docker Image CI
 
+env:
+  tagId: $(date +%s)
+
 on:
   push:
     branches: [ master ]
@@ -19,6 +22,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gwadadasol/categoryservice:$(date +%s)
+      run: docker build . --file Dockerfile --tag gwadadasol/categoryservice:${{tagId}}
     - name: Push image to repository
-      run: docker push gwadadasol/categoryservice:$(date +%s)
+      run: docker push gwadadasol/categoryservice:${{tagId}}
