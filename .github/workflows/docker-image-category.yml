@@ -1,7 +1,9 @@
-name: Docker Image CI
 
 env:
   tagId: $(date +%s)
+
+
+name: Docker Image CI
 
 on:
   push:
