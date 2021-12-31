@@ -19,7 +19,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      tagId: $(date +%s)
+      tagId: ${{github.run_number}} #$(date +%s)
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
