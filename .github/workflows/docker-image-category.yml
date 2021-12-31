@@ -24,6 +24,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gwadadasol/categoryservice:${{tagId}}
+      run: docker build . --file Dockerfile --tag gwadadasol/categoryservice:${{env.tagId}}
     - name: Push image to repository
-      run: docker push gwadadasol/categoryservice:${{tagId}}
+      run: docker push gwadadasol/categoryservice:${{env.tagId}}
