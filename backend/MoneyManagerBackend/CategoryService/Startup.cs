@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CategoryService.AsyncDataServices;
 using CategoryService.Domains.Model;
 using CategoryService.Domains.Repository;
 using MediatR;
