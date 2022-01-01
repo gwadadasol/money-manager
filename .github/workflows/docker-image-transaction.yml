@@ -1,0 +1,30 @@
+
+
+
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+defaults:
+  run:
+    working-directory: ./backend/MoneyManagerBackend/TransactionService
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      tagId: ${{github.run_number}} 
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag gwadadasol/transactionservice:${{env.tagId}}
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push gwadadasol/transactinservice:${{env.tagId}}
+        
