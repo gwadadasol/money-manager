@@ -1,0 +1,40 @@
+{
+    "Routes":[
+        {
+            "DownstreamPathTemplate":"/api/v1/rules",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/rules",
+            "UpstreamHttpMethod": ["Get", "Post"]            
+        },
+        {
+            "DownstreamPathTemplate":"/api/v1/rules/{categoryName}",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/rules/{categoryName}",
+            "UpstreamHttpMethod": ["Get"]            
+        },
+        {
+            "DownstreamPathTemplate":"/api/v1/rules/{ruleId}",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/v1/rules/{ruleId}",
+            "UpstreamHttpMethod": ["Delete"]            
+        }
+    ]
+}

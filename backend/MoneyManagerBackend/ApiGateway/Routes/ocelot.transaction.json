@@ -1,0 +1,28 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/v1/transactions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "10.1.0.5",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/  ",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/transactions/{transactionId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "10.1.0.5",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/transactions/{transactionId}",
+      "UpstreamHttpMethod": [ "Get", "Update", "Delete" ]
+    }
+  ]
+}

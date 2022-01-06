@@ -1,0 +1,52 @@
+{
+    "Routes":[
+        {
+            "DownstreamPathTemplate":"/api/v1/categories",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/categories",
+            "UpstreamHttpMethod": ["Get"]            
+        },
+        {
+            "DownstreamPathTemplate":"/api/v1/categories/{categoryId}",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/categories/{categoryId}",
+            "UpstreamHttpMethod": ["Get", "Delete"]            
+        },
+        {
+            "DownstreamPathTemplate":"/api/v1/categories/description",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/categories/description",
+            "UpstreamHttpMethod": ["Get"]            
+        },
+        {
+            "DownstreamPathTemplate":"/api/v1/categories/{categoryName}",
+            "DownstreamScheme":"http",
+            "DownstreamHostAndPorts":[
+                {
+                "Host":"10.1.0.6",
+                "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/categories/{categoryName}",
+            "UpstreamHttpMethod": ["Post"]            
+        }
+    ]
+}
