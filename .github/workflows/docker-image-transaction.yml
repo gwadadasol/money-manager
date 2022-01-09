@@ -11,7 +11,7 @@ on:
     
 defaults:
   run:
-    working-directory: ./backend/MoneyManagerBackend/TransactionService
+    working-directory: ./backend/TransactionService
 
 jobs:
 
