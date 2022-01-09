@@ -1,4 +1,5 @@
-using System;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TransactionService.AsyncDataServices;
+using System;
 using TransactionService.Domains.Model;
 using TransactionService.Domains.Repository;
 using TransactionService.EventProcessing;
@@ -31,26 +32,61 @@ namespace TransactionService
         public void ConfigureServices(IServiceCollection services)
         {
             // services.InstallServicesAssembly(Configuration);
+            bool useAzure = bool.Parse(Configuration["UseAzure"]);
+            Console.WriteLine(useAzure);
 
 
             if (_env.IsDevelopment())
             {
-               Console.WriteLine("Development Mode");
-               Console.WriteLine("Use In Memory DB");
-               services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+                Console.WriteLine("Development Mode");
+                Console.WriteLine("Use In Memory DB");
+                services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
             }
             else
             {
-                Console.WriteLine("Production Mode");
+                Console.WriteLine(">>>>>>>>>>>>>> Production Mode");
+                if (useAzure)
+                {
+                    Console.WriteLine("Use Azure");
 
-                var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServer")   );
-                conStrBuilder.Password = Configuration["AzureSQLPassword"];
-                var connection = conStrBuilder.ConnectionString;
+                    var conStrBuilder = new SqlConnectionStringBuilder(
+                        Configuration.GetConnectionString("SqlServer")
+                        );
 
-                services.AddDbContext<AppDbContext>(opt =>
-                opt.UseSqlServer(connection));
+                    string secret = "";
+                    try
+                    {
+                        var vaultUri = new Uri("https://moneymanagervault2dev.vault.azure.net/");
+
+                        SecretClient secretClient2 = new SecretClient(vaultUri, new DefaultAzureCredential());
+                        secret = secretClient2.GetSecretAsync("AzureSQLPassword").Result.Value.Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("excption for https://moneymanagervault2dev.vault.azure.net/");
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    if (string.IsNullOrEmpty(secret))
+                    {
+                        secret = Configuration["AZURE_SQL_PASSWORD"];
+                    }
+
+                    Console.WriteLine($"---------------------- secret2: {secret}");
+                    conStrBuilder.Password = secret;
+
+                    var connection = conStrBuilder.ConnectionString;
+                    services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connection));
+                }
+                else
+                {
+
+                    var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServer"));
+                    conStrBuilder.Password = Configuration["AzureSQLPassword"];
+                    var connection = conStrBuilder.ConnectionString;
+                    services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connection));
+                }
             }
-
 
             services.AddMediatR(typeof(Startup));
             services.AddScoped<ITransactionRepository, TransactionRepository>();
