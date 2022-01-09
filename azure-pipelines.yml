@@ -15,7 +15,7 @@ variables:
   containerRegistry: 'moneymanagerregdev.azurecr.io'
   tag: '$(Build.BuildId)'
   imageName: 'gwadadasolmoneymanagertransasactionservice'
-  dockerfilePath: '$(Build.SourcesDirectory)/backend/MoneyManagerBackend/TransactionService/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/backend/TransactionService/Dockerfile'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
