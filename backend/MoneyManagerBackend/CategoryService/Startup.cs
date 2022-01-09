@@ -91,33 +91,36 @@ namespace CategoryService
                 Console.WriteLine(">>>>>>>>>>>>>> Production Mode");
                 if (useAzure)
                 {
-                    Console.WriteLine("Use Azure 2");
+                    Console.WriteLine("Use Azure");
 
                     var conStrBuilder = new SqlConnectionStringBuilder(
                         Configuration.GetConnectionString("SqlServer")
                         );
 
                     string secret = "";
-                    string secret2 = "";
                     try
                     {
-                        var vaultUri2 = new Uri("https://moneymanagervault2dev.vault.azure.net/");
+                        var vaultUri = new Uri("https://moneymanagervault2dev.vault.azure.net/");
 
-                        SecretClient secretClient2 = new SecretClient(vaultUri2, new DefaultAzureCredential());
-                        secret2 = secretClient2.GetSecretAsync("AzureSQLPassword").Result.Value.Value;
+                        SecretClient secretClient2 = new SecretClient(vaultUri, new DefaultAzureCredential());
+                        secret = secretClient2.GetSecretAsync("AzureSQLPassword").Result.Value.Value;
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("excption for https://moneymanagervault2dev.vault.azure.net/");
                         Console.WriteLine(ex.Message);
                     }
-                    Console.WriteLine($"---------------------- secret2: {secret2}");
 
-                    conStrBuilder.Password = secret2;
+                    if (string.IsNullOrEmpty(secret))
+                    {
+                        secret = Configuration["AZURE_SQL_PASSWORD"];
+                    }
+
+                    Console.WriteLine($"---------------------- secret2: {secret}");
+                    conStrBuilder.Password = secret;
 
                     var connection = conStrBuilder.ConnectionString;
                     services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connection));
-
                 }
                 else
                 {
@@ -146,6 +149,7 @@ namespace CategoryService
               {
                   builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
               }));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
