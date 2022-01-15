@@ -16,6 +16,10 @@ namespace CategoryService.Domains.Profiles
             CreateMap<RuleEntity, RuleDto>();
             CreateMap<RuleDto, RuleEntity>();
 
+            CreateMap<RuleDto, RulePublishedDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category));
+
             // CreateMap<CategoryRuleEntity, CategoryRuleDto>();
             // CreateMap<CategoryRuleDto, CategoryRuleEntity>();
 

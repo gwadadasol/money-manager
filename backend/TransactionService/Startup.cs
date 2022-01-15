@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using TransactionService.AsyncDataServices;
 using TransactionService.Domains.Model;
 using TransactionService.Domains.Repository;
 using TransactionService.EventProcessing;
@@ -92,7 +93,7 @@ namespace TransactionService
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddControllers();
 
-            // services.AddHostedService<MessageBusSubscriber>();
+            services.AddHostedService<MessageBusSubscriber>();
 
 
             services.AddSingleton<IEventProcessor, EventProcessor>();
