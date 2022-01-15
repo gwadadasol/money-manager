@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CategoryService.AsyncDataServices;
 using CategoryService.Contracts.V1;
 using CategoryService.Contracts.V1.Requests;
 using CategoryService.Domains.Dtos;
@@ -13,8 +14,10 @@ namespace CategoryService.Controllers.V1
     {
         private readonly IMediator _mediator;
         private readonly ILogger<CategoryController> _logger;
+        private readonly IMessageBusClient _messageBusClient;
 
-        public CategoryController(IMediator mediator, ILogger<CategoryController> logger)
+        public CategoryController(IMediator mediator, ILogger<CategoryController> logger
+        )
         {
             _mediator = mediator;
             _logger = logger;

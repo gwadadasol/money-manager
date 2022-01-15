@@ -1,6 +1,7 @@
 using System;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CategoryService.AsyncDataServices;
 using CategoryService.Domains.Model;
 using CategoryService.Domains.Repository;
 using MediatR;
@@ -136,6 +137,7 @@ namespace CategoryService
             services.AddControllers();
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
