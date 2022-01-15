@@ -89,14 +89,14 @@ namespace TransactionService
                 }
             }
 
-            services.AddMediatR(typeof(Startup));
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddMediatR(typeof(Startup));
             services.AddControllers();
 
             services.AddHostedService<MessageBusSubscriber>();
-
-
+            
             services.AddSingleton<IEventProcessor, EventProcessor>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddSwaggerGen();
