@@ -12,8 +12,8 @@ using TransactionService.Domains.Model;
 namespace TransactionService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211112160042_v2")]
-    partial class v2
+    [Migration("20220126105133_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -34,14 +34,22 @@ namespace TransactionService
         {
             // services.InstallServicesAssembly(Configuration);
             bool useAzure = bool.Parse(Configuration["UseAzure"]);
-            Console.WriteLine(useAzure);
-
+            bool useMemDb = bool.Parse(Configuration["useMemDb"]);
 
             if (_env.IsDevelopment())
             {
                 Console.WriteLine("Development Mode");
-                Console.WriteLine("Use In Memory DB");
-                services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+                if(useMemDb)
+                {
+                    Console.WriteLine("Use In Memory DB");
+                    services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+                }
+                else
+                {
+                    Console.WriteLine("Use Local DB");
+                    var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServerLocal"));
+                    services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(conStrBuilder.ConnectionString));
+                }
             }
             else
             {
