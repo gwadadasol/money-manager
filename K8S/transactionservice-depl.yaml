@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactionservice
+  template:
+    metadata:
+      labels:
+        app: transactionservice
+    spec:
+      containers:
+        - name: transactionservice
+          image: gwadadasol/transactionservice:latest
+          env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: db-password
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: db-user
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: transaction-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: transactionservice
+  ports:
+    - name: transactionservice
+      protocol: TCP
+      port: 80
+      targetPort: 80

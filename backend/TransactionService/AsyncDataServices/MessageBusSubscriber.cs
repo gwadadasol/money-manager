@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using TransactionService.EventProcessing;
@@ -17,41 +18,45 @@ namespace TransactionService.AsyncDataServices
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
+        private readonly ILogger<MessageBusSubscriber> _logger;
 
-        public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
+
+        public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor, ILogger<MessageBusSubscriber> logger)
         {
             _configuration = configuration;
             _eventProcessor = eventProcessor;
-
+            _logger = logger;
             InitializeRabbitMQ();
         }
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory(){HostName= _configuration["RabbitMQHost"],
-            Port =  int.Parse(_configuration["RabbitMQPort"])};
+            var factory = new ConnectionFactory()
+            {
+                HostName = _configuration["RabbitMQHost"],
+                Port = int.Parse(_configuration["RabbitMQPort"])
+            };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
-            _queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: _queueName,
-            exchange: "trigger",
-            routingKey: "");
 
-            Console.WriteLine("--> Listening on the message bus...");
+            _queueName = _channel.QueueDeclare().QueueName;
+            _channel.QueueBind(queue: _queueName, exchange: "trigger", routingKey: "");
+
+            _logger.LogTrace("--> Listening on the message bus...");
 
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
         }
 
         private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
-            Console.WriteLine("--> Connection Shutdown");
+            _logger.LogTrace("--> Connection Shutdown");
         }
 
         public override void Dispose()
         {
-            if ( _channel.IsOpen)
+            if (_channel.IsOpen)
             {
                 _channel.Close();
                 _connection.Close();
@@ -64,11 +69,11 @@ namespace TransactionService.AsyncDataServices
         {
             stoppingToken.ThrowIfCancellationRequested();
 
-            var consumer  = new EventingBasicConsumer(_channel);
+            var consumer = new EventingBasicConsumer(_channel);
 
-            consumer.Received += (ModuleHandle, ea) => 
+            consumer.Received += (ModuleHandle, ea) =>
             {
-                Console.WriteLine("--> Event Received!");
+                _logger.LogTrace("--> Event Received!");
 
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());

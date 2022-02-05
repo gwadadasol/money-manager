@@ -47,7 +47,7 @@ namespace TransactionService.Controllers.V1
          [HttpPut(ApiRoutes.Transaction.Update)]
         public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionDto transaction)
         {
-            _logger.LogTrace("AddTransaction");
+            _logger.LogTrace("UpdateTransaction");
 
             var result =  await _mediator.Send(new UpdateTransactionRequest {Transaction = transaction});
             return Ok(result);

@@ -14,14 +14,28 @@ spec:
             pathType: Prefix
             backend: 
               service: 
-                name: moneymanager-clusterip-srv
+                name: category-clusterip-srv
+                port:
+                  number: 80
+          - path: /api/v1/rules
+            pathType: Prefix
+            backend: 
+              service: 
+                name: category-clusterip-srv
                 port:
                   number: 80
           - path: /api/v1/transactions
             pathType: Prefix
             backend: 
               service: 
-                name: moneymanager-clusterip-srv
+                name: transaction-clusterip-srv
+                port:
+                  number: 80
+          - path: /api/v1/analyzer
+            pathType: Prefix
+            backend: 
+              service: 
+                name: analyzer-clusterip-srv
                 port:
                   number: 80
                   
