@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TransactionService.Contracts.V1;
 using TransactionService.Contracts.V1.Requests;
 using TransactionService.Domains.Dtos;
@@ -16,14 +17,17 @@ namespace TransactionService.EventProcessing
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly ILogger<EventProcessor> _logger;
 
         public EventProcessor(IServiceScopeFactory scopeFactory,
         IMapper mapper,
-        IMediator mediator)
+        IMediator mediator,
+        ILogger<EventProcessor> logger)
         {
-            _scopeFactory = scopeFactory;
-            _mapper = mapper;
-            _mediator = mediator;
+            _scopeFactory   = scopeFactory;
+            _mapper         = mapper;
+            _mediator       = mediator;
+            _logger         = logger;
         }
         public async void ProcessEvent(string message)
         {
@@ -32,14 +36,14 @@ namespace TransactionService.EventProcessing
             switch (eventType)
             {
                 case EventType.RulePublished:
-                    Console.WriteLine("--> Process Event RulePublished ");
+                    _logger.LogTrace("--> Process Event RulePublished ");
                     try
                     {
                         await UpdateCategoryAllTransactions();
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"--> Exception:{ex.Message}");
+                        _logger.LogTrace($"--> Exception:{ex.Message}");
                     }
                     break;
                 default:
@@ -62,8 +66,10 @@ namespace TransactionService.EventProcessing
                 foreach (var transaction in repo.GetAllTransactions())
                 {
                     // Get category
-                    System.Console.WriteLine($"transaction.Description: {transaction.Description}");
+                    _logger.LogTrace($"transaction.Description: {transaction.Description}");
                     transaction.Category = await _mediator.Send(new GetCategoryRequest { Description = transaction.Description });
+
+                    _logger.LogTrace($"Category: {transaction.Category}");
                     repo.UpdateTransaction(transaction);
                 }
 
@@ -74,23 +80,21 @@ namespace TransactionService.EventProcessing
 
         private EventType DertermineEvent(string notificationMessage)
         {
-            Console.WriteLine("--> Determine event");
+            _logger.LogTrace("--> Determine event");
 
             var eventType = JsonSerializer.Deserialize<GenericEventDto>(notificationMessage);
 
             switch (eventType.Event)
             {
                 case "New_rule_published":
-                    Console.WriteLine("--> New rule published event detected");
+                    _logger.LogTrace("--> New rule published event detected");
                     return EventType.RulePublished;
                 default:
-                    Console.WriteLine("--> Unknown Event");
+                    _logger.LogTrace("--> Unknown Event");
                     return EventType.Undefined;
             }
         }
     }
-
-
 
     enum EventType
     {

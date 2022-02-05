@@ -39,7 +39,7 @@ namespace TransactionService
             if (_env.IsDevelopment())
             {
                 Console.WriteLine("Development Mode");
-                if(useMemDb)
+                if (useMemDb)
                 {
                     Console.WriteLine("Use In Memory DB");
                     services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
@@ -89,11 +89,22 @@ namespace TransactionService
                 }
                 else
                 {
-
-                    var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServer"));
-                    conStrBuilder.Password = Configuration["AzureSQLPassword"];
-                    var connection = conStrBuilder.ConnectionString;
-                    services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connection));
+                    if (useMemDb)
+                    {
+                        Console.WriteLine("Use Mem DB");
+                        var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServer"));
+                        conStrBuilder.Password = Configuration["AzureSQLPassword"];
+                        var connection = conStrBuilder.ConnectionString;
+                        services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connection));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Use Local DB");
+                        var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServerLocal"));
+                        conStrBuilder.Password = Configuration["DB_PASSWORD"];
+                        conStrBuilder.UserID = Configuration["DB_USER"];
+                        services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(conStrBuilder.ConnectionString));
+                    }
                 }
             }
 
@@ -102,7 +113,7 @@ namespace TransactionService
             services.AddControllers();
 
             services.AddHostedService<MessageBusSubscriber>();
-            
+
             services.AddSingleton<IEventProcessor, EventProcessor>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
