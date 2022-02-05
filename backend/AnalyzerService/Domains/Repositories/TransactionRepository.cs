@@ -23,7 +23,7 @@ namespace AnalyzerService.Domains.Repository
 
         public TransactionEntity GetTransactionById(int id)
         {
-            return _dbContext.Transactions.FirstOrDefault(c => c.Id == id);
+            return _dbContext.Transactions.First(c => c.Id == id);
         }
 
         public bool SaveChanges()

@@ -8,6 +8,7 @@ namespace AnalyzerService.Contracts.V1
         public static class  Analyzer
         {
             public const string GetAmountsCategories = Base + "/analyzer/amounts/categories";
+            public const string GetBalanceMonthly = Base + "/analyzer/balances/monthly";
         }
     }
 }

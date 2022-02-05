@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnalyzerService.Controllers
 {
+    [ApiController]
     public class AnalyzerServiceController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -17,8 +18,17 @@ namespace AnalyzerService.Controllers
         [HttpGet(ApiRoutes.Analyzer.GetAmountsCategories)]
         public async Task<IActionResult> GetAmountsByCategories()
         {
-            await _mediator.Send(new GetAmountsByCategoriesRequest());
-            return Ok();
+            var result = await _mediator.Send(new GetAmountsByCategoriesRequest());
+            return Ok(result);
         }
+
+        [HttpGet(ApiRoutes.Analyzer.GetBalanceMonthly)]
+        public async Task<IActionResult> GetBalancesMonthly()
+        {
+            var result = await _mediator.Send(new GetBalancesMonthlyRequest());
+            return Ok(result);
+        }
+
+
     }
 }

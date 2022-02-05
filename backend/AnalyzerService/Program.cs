@@ -12,6 +12,9 @@ ConfigurationManager configuration = builder.Configuration;
 IWebHostEnvironment environment = builder.Environment;
 
 var conStrBuilder = new SqlConnectionStringBuilder(configuration.GetConnectionString("SqlServerLocal"));
+conStrBuilder.Password = configuration["DB_PASSWORD"];
+conStrBuilder.UserID = configuration["DB_USER"];
+
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(conStrBuilder.ConnectionString));
 
 // Add services to the container.
@@ -26,6 +29,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => options.AddDefaultPolicy(
+                //name: "MyPolicy",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+                }));
+
+
 
 var app = builder.Build();
 
@@ -37,6 +48,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
