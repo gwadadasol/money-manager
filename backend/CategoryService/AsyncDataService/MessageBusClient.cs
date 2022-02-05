@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using CategoryService.Domains.Dtos;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace CategoryService.AsyncDataServices
@@ -13,9 +14,13 @@ namespace CategoryService.AsyncDataServices
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public MessageBusClient(IConfiguration configuration)
+        private readonly ILogger<MessageBusClient> _logger;
+
+        public MessageBusClient(IConfiguration configuration, ILogger<MessageBusClient> logger)
         {
             _configuration = configuration;
+            _logger =  logger;
+
             var factory = new ConnectionFactory()
             {
                 HostName = _configuration["RabbitMQHost"],
@@ -29,11 +34,11 @@ namespace CategoryService.AsyncDataServices
                 _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
                 _connection.ConnectionShutdown += RabbitMQ_Connectionhutdown;
 
-                Console.WriteLine("--> Connected to Message bus");
+                _logger.LogTrace("--> Connected to Message bus");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"--> Could not connect to the message bus: {ex.Message}");
+                _logger.LogError($"--> Could not connect to the message bus: {ex.Message}");
             }
         }
         public void PublisheNewCategoryRule(RulePublishedDto rulePublishedDto)
@@ -42,12 +47,12 @@ namespace CategoryService.AsyncDataServices
 
             if (_connection.IsOpen)
             {
-                Console.WriteLine("--> Rabbit conection is open, sendin message...");
+                _logger.LogTrace("--> Rabbit conection is open, sendin message...");
                 SendMessage(message);
             }
             else
             {
-                Console.WriteLine("--> RabbitMQ connection is closed, not sending");
+                _logger.LogWarning("--> RabbitMQ connection is closed, not sending");
             }
         }
 
@@ -60,13 +65,12 @@ namespace CategoryService.AsyncDataServices
             basicProperties: null,
             body: body);
 
-            Console.WriteLine($"--> We have sent {message}");
+            _logger.LogTrace($"--> We have sent {message}");
         }
 
         public void Dispose()
         {
-
-            Console.WriteLine("Message bus disposed");
+            _logger.LogTrace("Message bus disposed");
 
             if (_channel.IsOpen)
             {
@@ -74,11 +78,10 @@ namespace CategoryService.AsyncDataServices
                 _connection.Close();
 
             }
-
         }
         private void RabbitMQ_Connectionhutdown(object sender, ShutdownEventArgs e)
         {
-            Console.WriteLine("--> RabbitMQ Connection Shutdown");
+            _logger.LogTrace("--> RabbitMQ Connection Shutdown");
         }
     }
 }
