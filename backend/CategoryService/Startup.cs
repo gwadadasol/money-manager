@@ -91,6 +91,8 @@ namespace CategoryService
                     {
                         Console.WriteLine("Use Local DB");
                         var conStrBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("SqlServerLocal"));
+                        conStrBuilder.Password = Configuration["DB_PASSWORD"];
+                        conStrBuilder.UserID = Configuration["DB_USER"];
                         services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(conStrBuilder.ConnectionString));
                     }
                 }
