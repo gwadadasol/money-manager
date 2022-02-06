@@ -6,12 +6,12 @@ using MediatR;
 
 namespace AnalyzerService.Contracts.V1.Handlers;
 
-public class GetAmountsByCategoriesHandler : IRequestHandler<GetAmountsByCategoriesRequest, IEnumerable<CatgoryValueDto>>
+public class GetAmountsByCategoriesRequestHandler : IRequestHandler<GetAmountsByCategoriesRequest, IEnumerable<CatgoryValueDto>>
 {
     private readonly IMapper _mapper;
     private readonly ITransactionRepository _repository;
 
-    public GetAmountsByCategoriesHandler(IMapper mapper, ITransactionRepository repository)
+    public GetAmountsByCategoriesRequestHandler(IMapper mapper, ITransactionRepository repository)
         {
             _mapper = mapper;
             _repository = repository;
