@@ -38,4 +38,11 @@ spec:
                 name: analyzer-clusterip-srv
                 port:
                   number: 80
+          - path: /
+            pathType: Prefix
+            backend: 
+              service: 
+                name: moneymanagerfrontend-clusterip-srv
+                port:
+                  number: 3000
                   

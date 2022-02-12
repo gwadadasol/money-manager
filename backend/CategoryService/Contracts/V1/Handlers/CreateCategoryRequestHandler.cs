@@ -17,10 +17,11 @@ namespace CategoryService.Contracts.V1.Handlers
         private readonly ICategoryRepository _repository;
         private readonly ILogger<CreateCategoryRequestHandler> _logger;
 
-        public CreateCategoryRequestHandler(IMapper mapper, ICategoryRepository repository)
+        public CreateCategoryRequestHandler(IMapper mapper, ICategoryRepository repository, ILogger<CreateCategoryRequestHandler> logger)
         {
             _mapper = mapper;
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task<CategoryDto> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
